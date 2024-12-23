@@ -237,4 +237,106 @@ describe("music player 클래스 테스트", () => {
     // assert
     expect(actual).toEqual(firstMusic);
   });
+
+  it("마지막 음악을 재생중 일 때, next Music을 호출하면 첫번째 음악이 재생된다.", () => {
+    // arrange
+    const firstMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Attention",
+    };
+
+    const secondMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Hype Boy",
+    };
+
+    const thirdMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Cookie",
+    };
+
+    musicPlayer.addMusic(firstMusic);
+    musicPlayer.addMusic(secondMusic);
+    musicPlayer.addMusic(thirdMusic);
+
+    musicPlayer.playMusic(thirdMusic);
+
+    // act
+    const actual = musicPlayer.nextMusic();
+
+    // assert
+    expect(actual).toEqual(firstMusic);
+  });
+
+  it("첫번째 음악을 재생중 일 때, prevMusic을 호출하면 가장 뒤에 있는 음악이 재생된다.", () => {
+    // arrange
+    const firstMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Attention",
+    };
+
+    const secondMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Hype Boy",
+    };
+
+    const thirdMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Cookie",
+    };
+
+    musicPlayer.addMusic(firstMusic);
+    musicPlayer.addMusic(secondMusic);
+    musicPlayer.addMusic(thirdMusic);
+    musicPlayer.playMusic(firstMusic);
+
+    // act
+    const actual = musicPlayer.prevMusic();
+
+    // assert
+    expect(actual).toEqual(thirdMusic);
+  });
+
+  it("현재 재생중인 음악이 없을 때, prevMusic을 호출하면 null이 반환된다.", () => {
+    // arrange
+    const firstMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Attention",
+    };
+
+    const secondMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Hype Boy",
+    };
+
+    const thirdMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Cookie",
+    };
+
+    musicPlayer.addMusic(firstMusic);
+    musicPlayer.addMusic(secondMusic);
+    musicPlayer.addMusic(thirdMusic);
+
+    // assert
+    expect(() => musicPlayer.prevMusic()).toThrow();
+  });
 });

@@ -7,5 +7,5 @@ module.exports = {
     "^.+.tsx?$": ["ts-jest", {}],
   },
   // testMatch: ["**/*.test.ts"],
-  testMatch: ["**/chunk.test.ts"],
+  testMatch: ["**/htmlEscape.test.ts"],
 };

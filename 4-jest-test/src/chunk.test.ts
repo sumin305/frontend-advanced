@@ -24,6 +24,19 @@ describe("chunk teset", () => {
     expect(actual).toEqual([[1], [2], [3], [4]]);
   });
 
+  it("array가 null일 경우, 빈 배열을 반환한다.", () => {
+    // arrange
+    const array = null;
+    const size = 1;
+
+    // act
+    const actual = chunk(array as any, size);
+
+    // assert
+    expect(actual).toEqual([]);
+    expect(actual).toHaveLength(0);
+  });
+
   it("array가 빈 배열이라면 빈 배열을 반환한다.", () => {
     // arrange
     const array = [];
@@ -88,5 +101,17 @@ describe("chunk teset", () => {
       [5, 6, 7, 8],
       [9, 10, 11, 12],
     ]);
+  });
+
+  it("slice가 실수일 경우에는 버림을 한다", () => {
+    // arrange
+    const array = [1, 2, 3, 4];
+    const size = 1.5;
+
+    // act
+    const actual = chunk(array, size);
+    console.log(actual);
+    // assert
+    expect(actual).toEqual([[1], [2], [3], [4]]);
   });
 });

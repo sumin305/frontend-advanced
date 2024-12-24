@@ -13,6 +13,15 @@ describe("music player 클래스 테스트", () => {
       title: "Hype Boy",
     };
   });
+
+  afterEach(() => {
+    // mocking 초기화
+    jest.clearAllMocks();
+  });
+
+  jest.mock("uuid", () => {
+    v4: () => 1;
+  });
   it("음악을 추가하면 음악 리스트에 추가된다", () => {
     // Arrage
     const musicPlayer = new MusicPlayer([]);
@@ -339,4 +348,79 @@ describe("music player 클래스 테스트", () => {
     // assert
     expect(() => musicPlayer.prevMusic()).toThrow();
   });
+
+  it("삭제할 음악이 음악 리스트에 있으면 음악이 삭제되고 삭제한 음악을 리턴한다", () => {
+    // arrange
+    const firstMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Attention",
+    };
+
+    const secondMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Hype Boy",
+    };
+
+    const thirdMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Cookie",
+    };
+
+    musicPlayer.addMusic(firstMusic);
+    musicPlayer.addMusic(secondMusic);
+    musicPlayer.addMusic(thirdMusic);
+
+    // act
+    const actual = musicPlayer.removeMusic(thirdMusic);
+
+    // assert
+    expect(actual).toEqual(thirdMusic);
+    expect(musicPlayer.getMusicList()).not.toContain(thirdMusic);
+  });
+
+  // stub
+  it("something test", () => {
+    const firstMusic: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Attention",
+    };
+
+    const stub: Pick<Music, "artist" | "title"> = {
+      title: "cookie",
+      artist: "뉴진스",
+    };
+
+    const actual = musicPlayer.something(stub as any);
+  });
+
+  // mock
+
+  // callback함수가 없어도 됨 => Fake 함수 이용
+  it("printWithCallback Test", () => {
+    // Mock 함수
+    // 함수는 함수인데 무슨 일을 하는지 딱히 구현은 없음
+    // 근데 파라미터로 넣어서 이 함수에 대한 여러가지를 테스트할 수 있음
+    const callbackMock = jest.fn();
+
+    // Fake 함수
+    const actual = musicPlayer.addLengthWithCallback(music, callbackMock);
+
+    expect(actual).toEqual({
+      title: music.title,
+      artist: music.artist,
+      length: Object.keys(music).length,
+    });
+
+    expect(callbackMock).toHaveBeenCalled();
+  });
+
+  it("");
 });

@@ -99,4 +99,6 @@ describe("slice 함수 테스트", () => {
     // assert
     expect(actual).toEqual([1, 2]);
   });
+
+  // 요규사항;
 });

@@ -68,5 +68,38 @@ export class MusicPlayer {
   }
 
   // remove music from music list
-  removeMusic(music: Music) {}
+  removeMusic(music: Music) {
+    if (this.musicList.length === 0) {
+      throw new Error("음악 리스트가 비어있습니다. ");
+    }
+
+    const found = this.musicList.find((m) => m === music);
+    if (found === undefined) {
+      throw new Error("삭제할 음악이 음악 리스트에 없습니다.");
+    }
+  }
+
+  something(music: Music) {
+    return `${music.title} + ${music.artist}`;
+  }
+
+  private somethingPrivate() {
+    console.log("private");
+  }
+
+  addLengthWithCallback(music: Music, callback: any) {
+    console.log(music);
+
+    if (callback) {
+      callback(music);
+    }
+
+    this.somethingPrivate();
+
+    return {
+      title: music.title,
+      artist: music.artist,
+      length: Object.keys(music).length,
+    };
+  }
 }

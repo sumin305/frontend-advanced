@@ -2,6 +2,28 @@ import { escape, unescape } from "./htmlEscape";
 
 describe("htmlEscape test", () => {
   describe("escape 함수 테스트", () => {
+    it.each([
+      ["&", "&amp;"],
+      ["<", "&lt;"],
+      [">", "&gt;"],
+      ['"', "&quot;"],
+      ["'", "&#39;"],
+    ])("문자 %s에 대해서 escape %s 한다", (input, expected) => {
+      expect(escape(input)).toBe(expected);
+    });
+
+    it.only("빈 문자열을 넣으면 빈 문자열이 반환된다.", () => {
+      // arrage
+      const input = "";
+      const expected = "";
+
+      // act
+      const actual = escape(input);
+
+      // assert
+      expect(actual).toBe(expected);
+    });
+
     it("html이 없는 문장이 들어오면 그대로 반환한다.", () => {
       // arrage
       const input = `fred, barney, pebbles`;

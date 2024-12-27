@@ -102,4 +102,17 @@ export class MusicPlayer {
       length: Object.keys(music).length,
     };
   }
+
+  async noSuperShy(music: Music) {
+    const regex = /super shy/gi;
+    if (regex.test(music.title)) {
+      return Promise.reject(new Error("Shy Boy Not Allowed"));
+    }
+    return Promise.resolve(music);
+  }
+
+  // noMoreAttention(music: Music, callback: )
 }
+export const someFunction = () => {
+  console.log("someFunction");
+};

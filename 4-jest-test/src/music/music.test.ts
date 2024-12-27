@@ -1,4 +1,4 @@
-import { Music, MusicPlayer } from "./music";
+import { Music, MusicPlayer, someFunction } from "./music";
 
 describe("music player 클래스 테스트", () => {
   let musicPlayer: MusicPlayer;
@@ -19,9 +19,26 @@ describe("music player 클래스 테스트", () => {
     jest.clearAllMocks();
   });
 
+  // uuid mocking
+  // import 하는 모듈을 mocking -> 실제 객체가 아니라 다른 객체로 바꿔치기
+  // uuid: mock
+  // v4: 라이브러리에서 지은 함수 이름임, v1, v3, v5..등
+  // v4: uuid 라는 라이브러리가 랜덤한 아이디를 만들기 위해 쓰는 함수
+  // 랜덤한 값이 있을 경우, 테스트가 불가능하기 때문에 uuid라는 모듈을 import할 때 v4 반환값을 바꾸라는 의미이다!
+  // 객체 리터럴로 return ()
+
   jest.mock("uuid", () => {
     v4: () => 1;
   });
+
+  // export 하는 파일명, () => {} mocking할 함수
+  // jest mock 테스트를 위해 대체
+  // module에서 import 해오는 것들을 대체합니다.
+  jest.mock("./music", () => ({
+    ...jest.requireActual("./music"),
+    someFunction: jest.fn(),
+  }));
+
   it("음악을 추가하면 음악 리스트에 추가된다", () => {
     // Arrage
     const musicPlayer = new MusicPlayer([]);
@@ -422,5 +439,72 @@ describe("music player 클래스 테스트", () => {
     expect(callbackMock).toHaveBeenCalled();
   });
 
-  it("");
+  it("Promise 함수 테스트 - 실패", () => {
+    const music: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Attention",
+    };
+
+    return musicPlayer
+      .noSuperShy(music)
+      .then((actual) => {
+        expect(actual).toEqual(music);
+      })
+      .catch((error) => {
+        expect(error).toBeInstanceOf(Error);
+        expect(error.message).toBe("Shy Boy Not Allowed");
+      });
+  });
+
+  it("Async/ Await 방식 프로미스트 테스트 [- 성공]", async () => {
+    // fake object
+    const music: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Attention",
+    };
+
+    const actual = await musicPlayer.noSuperShy(music);
+    expect(actual).toEqual(music);
+
+    // 위의 actual 두 문장과 동일
+    await expect(musicPlayer.noSuperShy(music)).resolves.toEqual(music);
+  });
+
+  it("Async/ Await 방식 프로미스트 테스트 [- tlfvo]", async () => {
+    // fake object
+    const music: Music = {
+      artist: "뉴진스",
+      genre: "POP",
+      releaseDate: "2017-01-01",
+      title: "Super Shy",
+    };
+
+    try {
+      await musicPlayer.noSuperShy(music);
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      expect(error.message).toBe("Shy Boy Not Allowed");
+    }
+    // 위의 try-catch문과 동일
+    await expect(musicPlayer.noSuperShy(music)).rejects.toThrow();
+  });
+
+  // it("callback 함수 테스트", () => {
+  //   // 내가 실행해보고 (비동기, 언제 시작되고 언제 끝날지 모르는 로직)
+  //   // 에러가 생기면 어떻게 callback 함수 호출해줄꼐
+  //   // 너가 알아서 처리해
+  //   const callback = (error: any) => {
+  //     if (error) {
+  //       console.log(error);
+  //       // sentry 에러로그 날리고,
+  //       // discore 알림 보내고..
+  //       expect(error).toBeNull;
+  //     }
+  //   };
+  //   fs.writeFile("test.txt", "hello", callback);
+  // });
 });

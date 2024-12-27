@@ -1,16 +1,30 @@
 import "@testing-library/jest-dom";
 import { screen, render, fireEvent } from "@testing-library/react";
 import Form from "./form";
-import userEvent from "@testing-library/user-event";
+import userEvent, { UserEvent } from "@testing-library/user-event";
 import { TODO } from "./types";
 import exp from "constants";
 describe("form 테스트", () => {
-  const User = userEvent.setup();
+  let User: UserEvent;
 
   beforeEach(() => {
-    render(<Form handleSaveToStorage={jest.fn()} setTodos={jest.fn()} />);
+    screen.debug();
+    User = userEvent.setup();
+    // render(<Form handleSaveToStorage={jest.fn()} setTodos={jest.fn()} />);
   });
 
+  it("handleAddTodo를 호출했을때 todo가 null이면 setTodos가 호출되지 않는다.", async () => {
+    // Arrange
+    const setTodosMock = jest.fn();
+    render(<Form handleSaveToStorage={jest.fn()} setTodos={setTodosMock} />);
+
+    // Act
+    const submitButton = screen.getByRole("button", { name: /create/i });
+    await User.click(submitButton);
+
+    // Assert
+    expect(setTodosMock).not.toHaveBeenCalled();
+  });
   it("생성하기 버튼을 클릭하면 handleAddTodo가 호출되고, setTodos와 handleSaveToStorage가 호출되어야 한다", async () => {
     // Arrage
     const setTodosMock = jest.fn();
@@ -49,9 +63,8 @@ describe("form 테스트", () => {
 
     // Act
     // 1. input 요소를 찾습니다.
-    const input = screen.getByLabelText("form-input");
+    const input = screen.getByLabelText("form-input-todo");
 
-    // 2. input 요소를 클릭한다.
     // await User.click(todoInput);
 
     // 3. input 요소에 타이핑한다.
@@ -69,22 +82,27 @@ describe("form 테스트", () => {
 
     // Act
     // 1. input 요소를 찾습니다.
-    const inputByQuerySelector = document.querySelector("form input");
+    const input = screen.getByRole("textbox", { name: /todo/i });
 
     // 2. input 요소를 클릭한다.
     // await User.click(todoInput);
 
     // 3. input 요소에 타이핑한다.
-    await User.type(inputByQuerySelector, "test");
+    await User.type(input, "test");
+
+    // 4. input 요소를 클릭한다.
+    const submitButton = screen.getByRole("button", { name: /create/i });
+    await User.click(submitButton);
 
     // setTodoMock이 호출되었는지 확인!
-    expect(setTodoMock).toHaveBeenCalled();
+    expect(setTodoMock).toHaveBeenCalledTimes(1);
   });
 
   it("form이 렌더링 되어야 합니다", () => {
+    render(<Form handleSaveToStorage={jest.fn()} setTodos={jest.fn()} />);
     // form test
-    const formByAriaLabel = screen.getByLabelText("form");
-    expect(formByAriaLabel).toBeInTheDocument();
+    const input = screen.getByLabelText("form-input-todo");
+    expect(input).toBeInTheDocument();
 
     const formByTestId = screen.getByTestId("todo-form");
     expect(formByTestId).toBeInTheDocument();
@@ -100,7 +118,8 @@ describe("form 테스트", () => {
   });
 
   it("input이 렌더링 되어야합니다", () => {
-    const input = screen.getByRole("textbox");
+    render(<Form handleSaveToStorage={jest.fn()} setTodos={jest.fn()} />);
+    const input = screen.getByLabelText("form-input-todo");
     expect(input).toBeInTheDocument();
 
     const inputByLabel = screen.getByLabelText("입력");

@@ -23,7 +23,7 @@ export const Form: React.FC<FormProps> = ({
     e.preventDefault();
 
     if (!todo) {
-      return;
+      throw new Error("할 일을 입력하세요.");
     }
 
     const newTodo: TODO = {
